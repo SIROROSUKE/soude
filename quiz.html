@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <script>
+        // JSONファイルから問題データを非同期で読み込む
+        async function loadQuestions() {
+            const response = await fetch('questions.json');
+            const questionData = await response.json();
+            
+            // ランダムに問題を選択
+            const randomIndex = Math.floor(Math.random() * questionData.length);
+            const currentQuestion = questionData[randomIndex];
+            const correctAnswer = currentQuestion[2];
+
+            // ランダムに3つの不正解の選択肢を取得
+            const incorrectOptions = [];
+            while (incorrectOptions.length < 3) {
+                const randomOption = questionData[Math.floor(Math.random() * questionData.length)][2];
+                if (randomOption !== correctAnswer && !incorrectOptions.includes(randomOption)) {
+                    incorrectOptions.push(randomOption);
+                }
+            }
+
+            // 選択肢に正解と不正解の要素を組み合わせてシャッフル
+            let options = [correctAnswer, ...incorrectOptions];
+            options = shuffle(options);
+
+            // HTMLを生成して表示
+            document.getElementById("question").innerHTML = "問題: " + currentQuestion[1];
+
+            for (let i = 0; i < options.length; i++) {
+                const optionButton = document.createElement("button");
+                optionButton.innerHTML = options[i];
+                optionButton.onclick = function() {
+                    checkAnswer(this.innerHTML);
+                };
+                document.getElementById("options").appendChild(optionButton);
+            }
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, temporaryValue, randomIndex;
+            while (0 !== currentIndex) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+            return array;
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const resultElement = document.getElementById("result");
+            if (selectedAnswer === correctAnswer) {
+                resultElement.innerHTML = "正解！";
+            } else {
+                resultElement.innerHTML = "不正解";
+            }
+        }
+
+        // ページ読み込み時に問題を読み込む
+        window.onload = loadQuestions;
+    </script>
+</head>
+<body>
+    <h1 id="question"></h1>
+
+    <div id="options"></div>
+
+    <p id="result"></p>
+</body>
+</html>
