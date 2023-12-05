@@ -39,6 +39,16 @@
                 };
                 document.getElementById("options").appendChild(optionButton);
             }
+
+            // checkAnswer 関数内でも使用できるように変数を宣言
+            function checkAnswer(selectedAnswer) {
+                const resultElement = document.getElementById("result");
+                if (selectedAnswer === correctAnswer) {
+                    resultElement.innerHTML = "正解！";
+                } else {
+                    resultElement.innerHTML = "不正解";
+                }
+            }
         }
 
         function shuffle(array) {
@@ -51,15 +61,6 @@
                 array[randomIndex] = temporaryValue;
             }
             return array;
-        }
-
-        function checkAnswer(selectedAnswer) {
-            const resultElement = document.getElementById("result");
-            if (selectedAnswer === correctAnswer) {
-                resultElement.innerHTML = "正解！";
-            } else {
-                resultElement.innerHTML = "不正解";
-            }
         }
 
         // ページ読み込み時に問題を読み込む
