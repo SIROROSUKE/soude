@@ -6,6 +6,7 @@
     <title>Quiz</title>
     <script>
         let correctAnswer;  // 正解の答えを格納する変数
+        let score = 0;      // スコア
 
         // JSONファイルから問題データを非同期で読み込む
         async function loadQuestions() {
@@ -64,15 +65,39 @@
 
         function checkAnswer(selectedAnswer) {
             const resultElement = document.getElementById("result");
+            const answerButtons = document.querySelectorAll("button");  // すべてのボタンを取得
+
+            // 正解判定
             if (selectedAnswer === correctAnswer) {
                 resultElement.innerHTML = "正解！";
+                score++;  // スコアを増やす
+
+                // 正解した後はボタンを無効化
+                answerButtons.forEach(button => {
+                    button.onclick = null;
+                });
             } else {
                 resultElement.innerHTML = "不正解";
             }
+
+            // スコアを表示
+            document.getElementById("score").innerHTML = "スコア: " + score;
+
+            // スコアをローカルストレージに保存
+            localStorage.setItem("quizScore", score.toString());
         }
 
         // ページ読み込み時に最初の問題を読み込む
-        window.onload = loadQuestions;
+        window.onload = function() {
+            // スコアをローカルストレージから取得
+            const savedScore = localStorage.getItem("quizScore");
+            if (savedScore !== null) {
+                score = parseInt(savedScore, 10);
+                document.getElementById("score").innerHTML = "スコア: " + score;
+            }
+
+            loadQuestions();
+        };
     </script>
 </head>
 <body>
@@ -81,6 +106,8 @@
     <div id="options"></div>
 
     <p id="result"></p>
+
+    <p id="score"></p>
 
     <!-- もう一問ボタン -->
     <button onclick="loadQuestions()">もう一問</button>
