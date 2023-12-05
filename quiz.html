@@ -7,7 +7,7 @@
     <script>
         // JSONファイルから問題データを非同期で読み込む
         async function loadQuestions() {
-            const response = await fetch('questions.json');
+            const response = await fetch('http://localhost:8000/questions.json');
             const questionData = await response.json();
             
             // ランダムに問題を選択
@@ -35,7 +35,7 @@
                 const optionButton = document.createElement("button");
                 optionButton.innerHTML = options[i];
                 optionButton.onclick = function() {
-                    checkAnswer(this.innerHTML);
+                    checkAnswer(options[i]);
                 };
                 document.getElementById("options").appendChild(optionButton);
             }
