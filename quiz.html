@@ -7,11 +7,14 @@
     <script>
         let correctAnswer;  // 正解の答えを格納する変数
         let score = 0;      // スコア
+        let totalQuestions = 0;  // 総問題数
 
         // JSONファイルから問題データを非同期で読み込む
         async function loadQuestions() {
             const response = await fetch('questions.json');
             const questionData = await response.json();
+
+            totalQuestions++;  // 総問題数を増やす
             
             // ランダムに問題を選択
             const randomIndex = Math.floor(Math.random() * questionData.length);
@@ -71,29 +74,45 @@
             if (selectedAnswer === correctAnswer) {
                 resultElement.innerHTML = "正解！";
                 score++;  // スコアを増やす
-
-                // 正解した後はボタンを無効化
-                answerButtons.forEach(button => {
-                    button.onclick = null;
-                });
             } else {
                 resultElement.innerHTML = "不正解";
             }
 
-            // スコアを表示
-            document.getElementById("score").innerHTML = "スコア: " + score;
+            // ボタンを有効にする
+            answerButtons.forEach(button => {
+                button.onclick = function() {
+                    checkAnswer(button.innerHTML);
+                };
+            });
 
-            // スコアをローカルストレージに保存
+            // 正解した後も新しい問題を読み込む
+            loadQuestions();
+
+            // スコアと正解率を表示
+            const scoreElement = document.getElementById("score");
+            const accuracyElement = document.getElementById("accuracy");
+
+            scoreElement.innerHTML = "スコア: " + score;
+            accuracyElement.innerHTML = "正解率: " + ((score / totalQuestions) * 100).toFixed(2) + "%";
+
+            // スコアと正解率をローカルストレージに保存
             localStorage.setItem("quizScore", score.toString());
+            localStorage.setItem("quizAccuracy", ((score / totalQuestions) * 100).toFixed(2).toString());
         }
 
         // ページ読み込み時に最初の問題を読み込む
         window.onload = function() {
-            // スコアをローカルストレージから取得
+            // スコアと正解率をローカルストレージから取得
             const savedScore = localStorage.getItem("quizScore");
+            const savedAccuracy = localStorage.getItem("quizAccuracy");
+
             if (savedScore !== null) {
                 score = parseInt(savedScore, 10);
                 document.getElementById("score").innerHTML = "スコア: " + score;
+            }
+
+            if (savedAccuracy !== null) {
+                document.getElementById("accuracy").innerHTML = "正解率: " + savedAccuracy + "%";
             }
 
             loadQuestions();
@@ -108,6 +127,7 @@
     <p id="result"></p>
 
     <p id="score"></p>
+    <p id="accuracy"></p>
 
     <!-- もう一問ボタン -->
     <button onclick="loadQuestions()">もう一問</button>
