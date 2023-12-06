@@ -20,7 +20,7 @@
                 totalQuestions++;
                 waitForNextQuestion = false;
             } else {
-
+                totalQuestions++;
                 // ランダムに問題を選択
                 const randomIndex = Math.floor(Math.random() * questionData.length);
                 const currentQuestion = questionData[randomIndex];
