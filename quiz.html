@@ -15,45 +15,51 @@
             const response = await fetch('questions.json');
             const questionData = await response.json();
 
-            // 新しい問題を出題
-            totalQuestions++;
+            if (waitForNextQuestion) {
+                // 次の問題が待機中なら、問題を再読み込む
+                totalQuestions++;
+                waitForNextQuestion = false;
+            } else {
+                // 新しい問題を出題
+                totalQuestions++;
 
-            // ランダムに問題を選択
-            const randomIndex = Math.floor(Math.random() * questionData.length);
-            const currentQuestion = questionData[randomIndex];
-            correctAnswer = currentQuestion[1];  // 正解の答えを保存（問題が英単語の場合）
+                // ランダムに問題を選択
+                const randomIndex = Math.floor(Math.random() * questionData.length);
+                const currentQuestion = questionData[randomIndex];
+                correctAnswer = currentQuestion[1];  // 正解の答えを保存（問題が英単語の場合）
 
-            // ランダムに3つの不正解の選択肢を取得
-            const incorrectOptions = [];
-            while (incorrectOptions.length < 3) {
-                const randomOption = questionData[Math.floor(Math.random() * questionData.length)][1];
-                if (randomOption !== correctAnswer && !incorrectOptions.includes(randomOption)) {
-                    incorrectOptions.push(randomOption);
+                // ランダムに3つの不正解の選択肢を取得
+                const incorrectOptions = [];
+                while (incorrectOptions.length < 3) {
+                    const randomOption = questionData[Math.floor(Math.random() * questionData.length)][1];
+                    if (randomOption !== correctAnswer && !incorrectOptions.includes(randomOption)) {
+                        incorrectOptions.push(randomOption);
+                    }
                 }
+
+                // 選択肢に正解と不正解の要素を組み合わせてシャッフル
+                let options = [correctAnswer, ...incorrectOptions];
+                options = shuffle(options);
+
+                // HTMLを生成して表示
+                document.getElementById("question").innerHTML = "問題: " + currentQuestion[2];
+
+                // 選択肢ボタンを生成
+                const optionsContainer = document.getElementById("options");
+                optionsContainer.innerHTML = "";  // 選択肢をクリア
+
+                for (let i = 0; i < options.length; i++) {
+                    const optionButton = document.createElement("button");
+                    optionButton.innerHTML = options[i];
+                    optionButton.onclick = function() {
+                        checkAnswer(options[i]);
+                    };
+                    optionsContainer.appendChild(optionButton);
+                }
+
+                // 結果メッセージをクリア
+                document.getElementById("result").innerHTML = "";
             }
-
-            // 選択肢に正解と不正解の要素を組み合わせてシャッフル
-            let options = [correctAnswer, ...incorrectOptions];
-            options = shuffle(options);
-
-            // HTMLを生成して表示
-            document.getElementById("question").innerHTML = "問題: " + currentQuestion[2];
-
-            // 選択肢ボタンを生成
-            const optionsContainer = document.getElementById("options");
-            optionsContainer.innerHTML = "";  // 選択肢をクリア
-
-            for (let i = 0; i < options.length; i++) {
-                const optionButton = document.createElement("button");
-                optionButton.innerHTML = options[i];
-                optionButton.onclick = function() {
-                    checkAnswer(options[i]);
-                };
-                optionsContainer.appendChild(optionButton);
-            }
-
-            // 結果メッセージをクリア
-            document.getElementById("result").innerHTML = "";
         }
 
         function shuffle(array) {
