@@ -26,12 +26,12 @@
                 // ランダムに問題を選択
                 const randomIndex = Math.floor(Math.random() * questionData.length);
                 const currentQuestion = questionData[randomIndex];
-                correctAnswer = currentQuestion[2];  // 正解の答えを保存
+                correctAnswer = currentQuestion[1];  // 正解の答えを保存（問題が英単語の場合）
 
                 // ランダムに3つの不正解の選択肢を取得
                 const incorrectOptions = [];
                 while (incorrectOptions.length < 3) {
-                    const randomOption = questionData[Math.floor(Math.random() * questionData.length)][2];
+                    const randomOption = questionData[Math.floor(Math.random() * questionData.length)][1];
                     if (randomOption !== correctAnswer && !incorrectOptions.includes(randomOption)) {
                         incorrectOptions.push(randomOption);
                     }
@@ -42,7 +42,7 @@
                 options = shuffle(options);
 
                 // HTMLを生成して表示
-                document.getElementById("question").innerHTML = "問題: " + currentQuestion[1];
+                document.getElementById("question").innerHTML = "問題: " + currentQuestion[2];
 
                 // 選択肢ボタンを生成
                 const optionsContainer = document.getElementById("options");
