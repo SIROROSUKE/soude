@@ -15,10 +15,8 @@
             const response = await fetch('questions.json');
             const questionData = await response.json();
 
-            // 新しい問題を出題
-            if (!waitForNextQuestion) {
-                totalQuestions++;
-            }
+            totalQuestions++;
+            
 
             // ランダムに問題を選択
             const randomIndex = Math.floor(Math.random() * questionData.length);
