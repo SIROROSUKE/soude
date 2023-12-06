@@ -8,50 +8,58 @@
         let correctAnswer;  // 正解の答えを格納する変数
         let score = 0;      // スコア
         let totalQuestions = 0;  // 総問題数
+        let waitForNextQuestion = false;  // 次の問題待ちフラグ
 
         // JSONファイルから問題データを非同期で読み込む
         async function loadQuestions() {
             const response = await fetch('questions.json');
             const questionData = await response.json();
 
-            totalQuestions++;  // 総問題数を増やす
-            
-            // ランダムに問題を選択
-            const randomIndex = Math.floor(Math.random() * questionData.length);
-            const currentQuestion = questionData[randomIndex];
-            correctAnswer = currentQuestion[2];  // 正解の答えを保存
+            if (waitForNextQuestion) {
+                // 次の問題が待機中なら、問題を再読み込む
+                totalQuestions++;
+            } else {
+                // 新しい問題を出題
+                totalQuestions++;
+                waitForNextQuestion = false;
 
-            // ランダムに3つの不正解の選択肢を取得
-            const incorrectOptions = [];
-            while (incorrectOptions.length < 3) {
-                const randomOption = questionData[Math.floor(Math.random() * questionData.length)][2];
-                if (randomOption !== correctAnswer && !incorrectOptions.includes(randomOption)) {
-                    incorrectOptions.push(randomOption);
+                // ランダムに問題を選択
+                const randomIndex = Math.floor(Math.random() * questionData.length);
+                const currentQuestion = questionData[randomIndex];
+                correctAnswer = currentQuestion[2];  // 正解の答えを保存
+
+                // ランダムに3つの不正解の選択肢を取得
+                const incorrectOptions = [];
+                while (incorrectOptions.length < 3) {
+                    const randomOption = questionData[Math.floor(Math.random() * questionData.length)][2];
+                    if (randomOption !== correctAnswer && !incorrectOptions.includes(randomOption)) {
+                        incorrectOptions.push(randomOption);
+                    }
                 }
+
+                // 選択肢に正解と不正解の要素を組み合わせてシャッフル
+                let options = [correctAnswer, ...incorrectOptions];
+                options = shuffle(options);
+
+                // HTMLを生成して表示
+                document.getElementById("question").innerHTML = "問題: " + currentQuestion[1];
+
+                // 選択肢ボタンを生成
+                const optionsContainer = document.getElementById("options");
+                optionsContainer.innerHTML = "";  // 選択肢をクリア
+
+                for (let i = 0; i < options.length; i++) {
+                    const optionButton = document.createElement("button");
+                    optionButton.innerHTML = options[i];
+                    optionButton.onclick = function() {
+                        checkAnswer(options[i]);
+                    };
+                    optionsContainer.appendChild(optionButton);
+                }
+
+                // 結果メッセージをクリア
+                document.getElementById("result").innerHTML = "";
             }
-
-            // 選択肢に正解と不正解の要素を組み合わせてシャッフル
-            let options = [correctAnswer, ...incorrectOptions];
-            options = shuffle(options);
-
-            // HTMLを生成して表示
-            document.getElementById("question").innerHTML = "問題: " + currentQuestion[1];
-
-            // 選択肢ボタンを生成
-            const optionsContainer = document.getElementById("options");
-            optionsContainer.innerHTML = "";  // 選択肢をクリア
-
-            for (let i = 0; i < options.length; i++) {
-                const optionButton = document.createElement("button");
-                optionButton.innerHTML = options[i];
-                optionButton.onclick = function() {
-                    checkAnswer(options[i]);
-                };
-                optionsContainer.appendChild(optionButton);
-            }
-
-            // 結果メッセージをクリア
-            document.getElementById("result").innerHTML = "";
         }
 
         function shuffle(array) {
@@ -74,8 +82,10 @@
             if (selectedAnswer === correctAnswer) {
                 resultElement.innerHTML = "正解！";
                 score++;  // スコアを増やす
+                waitForNextQuestion = true;  // 次の問題待ちフラグをセット
             } else {
                 resultElement.innerHTML = "不正解";
+                waitForNextQuestion = false;  // 次の問題待ちフラグをリセット
             }
 
             // ボタンを有効にする
@@ -93,11 +103,25 @@
             const accuracyElement = document.getElementById("accuracy");
 
             scoreElement.innerHTML = "スコア: " + score;
-            accuracyElement.innerHTML = "正解率: " + ((score / totalQuestions) * 100).toFixed(2) + "%";
+            accuracyElement.innerHTML = "正解率: " + Math.floor((score / totalQuestions) * 100) + "%";
 
             // スコアと正解率をローカルストレージに保存
             localStorage.setItem("quizScore", score.toString());
-            localStorage.setItem("quizAccuracy", ((score / totalQuestions) * 100).toFixed(2).toString());
+            localStorage.setItem("quizAccuracy", Math.floor((score / totalQuestions) * 100).toString());
+        }
+
+        // ローカルストレージのスコアと正解率をリセット
+        function resetRecords() {
+            localStorage.removeItem("quizScore");
+            localStorage.removeItem("quizAccuracy");
+
+            // スコアと正解率の表示をクリア
+            document.getElementById("score").innerHTML = "スコア: 0";
+            document.getElementById("accuracy").innerHTML = "正解率: 0%";
+
+            // 総問題数もリセット
+            totalQuestions = 0;
+            waitForNextQuestion = false;
         }
 
         // ページ読み込み時に最初の問題を読み込む
@@ -131,5 +155,8 @@
 
     <!-- もう一問ボタン -->
     <button onclick="loadQuestions()">もう一問</button>
+
+    <!-- 記録リセットボタン -->
+    <button onclick="resetRecords()">記録をリセット</button>
 </body>
 </html>
