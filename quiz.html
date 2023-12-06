@@ -7,17 +7,16 @@
     <script>
         let correctAnswer;  // 正解の答えを格納する変数
         let score = 0;      // スコア
-        let totalQuestions = 1;  // 総問題数
+        let totalQuestions = 0;  // 総問題数
         let waitForNextQuestion = false;  // 次の問題待ちフラグ
 
         // JSONファイルから問題データを非同期で読み込む
         async function loadQuestions() {
             const response = await fetch('questions.json');
             const questionData = await response.json();
-
+            
             totalQuestions++;
             
-
             // ランダムに問題を選択
             const randomIndex = Math.floor(Math.random() * questionData.length);
             const currentQuestion = questionData[randomIndex];
