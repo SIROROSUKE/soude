@@ -16,7 +16,7 @@
             const questionData = await response.json();
 
             // 新しい問題を出題
-            if (!waitForNextQuestion) {
+            if (waitForNextQuestion) {
                 totalQuestions++;
             }
 
