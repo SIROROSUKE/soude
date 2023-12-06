@@ -18,10 +18,10 @@
             if (waitForNextQuestion) {
                 // 次の問題が待機中なら、問題を再読み込む
                 totalQuestions++;
+                waitForNextQuestion = false;
             } else {
                 // 新しい問題を出題
                 totalQuestions++;
-                waitForNextQuestion = false;
 
                 // ランダムに問題を選択
                 const randomIndex = Math.floor(Math.random() * questionData.length);
@@ -112,19 +112,23 @@
 
         // ローカルストレージのスコアと正解率をリセット
         function resetRecords() {
-            localStorage.removeItem("quizScore");
-            localStorage.removeItem("quizAccuracy");
+            score = 0;
+            totalQuestions = 0;
+            waitForNextQuestion = false;
 
             // スコアと正解率の表示をクリア
             document.getElementById("score").innerHTML = "スコア: 0";
             document.getElementById("accuracy").innerHTML = "正解率: 0%";
 
-            // 総問題数もリセット
-            totalQuestions = 0;
-            waitForNextQuestion = false;
+            // スコアと正解率をローカルストレージに保存
+            localStorage.setItem("quizScore", "0");
+            localStorage.setItem("quizAccuracy", "0");
+
+            // 初回読み込み時に最初の問題を読み込む
+            loadQuestions();
         }
 
-        // ページ読み込み時に最初の問題を読み込む
+        // ページ読み込み時に初回の問題を読み込む
         window.onload = function() {
             // スコアと正解率をローカルストレージから取得
             const savedScore = localStorage.getItem("quizScore");
@@ -139,6 +143,7 @@
                 document.getElementById("accuracy").innerHTML = "正解率: " + savedAccuracy + "%";
             }
 
+            // 初回読み込み時に最初の問題を読み込む
             loadQuestions();
         };
     </script>
