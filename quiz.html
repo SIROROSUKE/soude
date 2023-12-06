@@ -22,7 +22,7 @@
             const currentQuestion = questionData[randomIndex];
             correctAnswer = currentQuestion[1];  // 正解の答えを保存（問題が英単語の場合）
 
-            // ランダムに3つの不の選択肢を取得
+            // ランダムに3つの不正解の選択肢を取得
             const incorrectOptions = [];
             while (incorrectOptions.length < 3) {
                 const randomOption = questionData[Math.floor(Math.random() * questionData.length)][1];
@@ -31,7 +31,7 @@
                 }
             }
 
-            // 選択肢に正解との要素を組み合わせてシャッフル
+            // 選択肢に正解と不正解の要素を組み合わせてシャッフル
             let options = [correctAnswer, ...incorrectOptions];
             options = shuffle(options);
 
@@ -80,7 +80,7 @@
                 loadQuestions();
             } else {
                 resultElement.innerHTML = "不正解";
-                totalQuestion++;
+                totalQuestions++;
                 waitForNextQuestion = false;  // 次の問題待ちフラグをリセット
                 loadQuestions();
             }
