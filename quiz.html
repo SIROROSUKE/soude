@@ -78,7 +78,6 @@
             if (selectedAnswer === correctAnswer) {
                 resultElement.innerHTML = "正解！";
                 score++;  // スコアを増やす
-                totalQuestion++
                 waitForNextQuestion = true;  // 次の問題待ちフラグをセット
             } else {
                 resultElement.innerHTML = "不正解";
