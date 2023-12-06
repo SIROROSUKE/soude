@@ -34,7 +34,7 @@
                 }
             }
 
-            // 選択肢に正解と不正解の要素を組み合わせてシャッフル
+            // 選択肢に正解との要素を組み合わせてシャッフル
             let options = [correctAnswer, ...incorrectOptions];
             options = shuffle(options);
 
@@ -82,6 +82,7 @@
                 waitForNextQuestion = true;  // 次の問題待ちフラグをセット
             } else {
                 resultElement.innerHTML = "不正解";
+                totalQuestion++
                 waitForNextQuestion = false;  // 次の問題待ちフラグをリセット
             }
 
