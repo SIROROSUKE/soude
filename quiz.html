@@ -76,12 +76,13 @@
                 resultElement.innerHTML = "正解！";
                 score++;  // スコアを増やす
                 // 正解した後も新しい問題を読み込む
-                loadQuestions();
                 waitForNextQuestion = true;  // 次の問題待ちフラグをセット
+                loadQuestions();
             } else {
                 resultElement.innerHTML = "不正解";
                 totalQuestion++;
                 waitForNextQuestion = false;  // 次の問題待ちフラグをリセット
+                loadQuestions();
             }
 
             // ボタンを有効にする
