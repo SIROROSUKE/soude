@@ -16,7 +16,7 @@
             const questionData = await response.json();
 
             // 新しい問題を出題
-            if (waitForNextQuestion) {
+            if (!waitForNextQuestion) {
                 totalQuestions++;
             }
 
@@ -78,6 +78,8 @@
             if (selectedAnswer === correctAnswer) {
                 resultElement.innerHTML = "正解！";
                 score++;  // スコアを増やす
+                // 正解した後も新しい問題を読み込む
+                loadQuestions();
                 waitForNextQuestion = true;  // 次の問題待ちフラグをセット
             } else {
                 resultElement.innerHTML = "不正解";
@@ -91,9 +93,6 @@
                     checkAnswer(button.innerHTML);
                 };
             });
-
-            // 正解した後も新しい問題を読み込む
-            loadQuestions();
 
             // スコアと正解率を表示
             const scoreElement = document.getElementById("score");
