@@ -25,7 +25,7 @@
             const currentQuestion = questionData[randomIndex];
             correctAnswer = currentQuestion[1];  // 正解の答えを保存（問題が英単語の場合）
 
-            // ランダムに3つの不正解の選択肢を取得
+            // ランダムに3つの不の選択肢を取得
             const incorrectOptions = [];
             while (incorrectOptions.length < 3) {
                 const randomOption = questionData[Math.floor(Math.random() * questionData.length)][1];
@@ -78,6 +78,7 @@
             if (selectedAnswer === correctAnswer) {
                 resultElement.innerHTML = "正解！";
                 score++;  // スコアを増やす
+                totalQuestion++
                 waitForNextQuestion = true;  // 次の問題待ちフラグをセット
             } else {
                 resultElement.innerHTML = "不正解";
