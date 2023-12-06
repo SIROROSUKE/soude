@@ -95,12 +95,21 @@
                 };
             });
 
+            // 正解した後も新しい問題を読み込む
+            loadQuestions();
+
             // スコアと正解率を表示
             const scoreElement = document.getElementById("score");
             const accuracyElement = document.getElementById("accuracy");
 
             scoreElement.innerHTML = "スコア: " + score;
-            accuracyElement.innerHTML = "正解率: " + Math.floor((score / totalQuestions) * 100) + "%";
+
+            // 総問題数が0でない場合に正解率を表示
+            if (totalQuestions > 0) {
+                accuracyElement.innerHTML = "正解率: " + Math.floor((score / totalQuestions) * 100) + "%";
+            } else {
+                accuracyElement.innerHTML = "正解率: 0%";
+            }
 
             // スコアと正解率をローカルストレージに保存
             localStorage.setItem("quizScore", score.toString());
@@ -120,6 +129,9 @@
             // スコアと正解率をローカルストレージに保存
             localStorage.setItem("quizScore", "0");
             localStorage.setItem("quizAccuracy", "0");
+
+            // 初回読み込み時に最初の問題を読み込む
+            loadQuestions();
         }
 
         // ページ読み込み時に初回の問題を読み込む
