@@ -109,7 +109,7 @@
 
             // スコアと正解率をローカルストレージに保存
             localStorage.setItem("quizScore", score.toString());
-            localStorage.setItem("quizAccuracy", Math.floor((score / totalQuestions) * 100).toString());
+            localStorage.setItem("quizAccuracy", totalQuestions.toString());
         }
 
         // ローカルストレージのスコアと正解率をリセット
@@ -120,11 +120,11 @@
 
             // スコアと正解率の表示をクリア
             document.getElementById("score").innerHTML = "スコア: 0";
-            document.getElementById("accuracy").innerHTML = "正解率: 0%";
+            document.getElementById("totalQuestions").innerHTML = "正解率: 0%";
 
             // スコアと正解率をローカルストレージに保存
             localStorage.setItem("quizScore", "0");
-            localStorage.setItem("quizAccuracy", "0");
+            localStorage.setItem("totalQuestions", "0");
 
             // 初回読み込み時に最初の問題を読み込む
             loadQuestions();
@@ -134,7 +134,7 @@
         window.onload = function() {
             // スコアと正解率をローカルストレージから取得
             const savedScore = localStorage.getItem("quizScore");
-            const savedAccuracy = localStorage.getItem("quizAccuracy");
+            const savedAccuracy = localStorage.getItem("totalQuestions");
 
             if (savedScore !== null) {
                 score = parseInt(savedScore, 10);
@@ -142,7 +142,7 @@
             }
 
             if (savedAccuracy !== null) {
-                document.getElementById("accuracy").innerHTML = "正解率: " + savedAccuracy + "%";
+                document.getElementById("totalQuestions").innerHTML = "正解率: " + totalQuestions + "%";
             }
 
             // 初回読み込み時に最初の問題を読み込む
