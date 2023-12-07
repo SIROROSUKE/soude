@@ -98,7 +98,8 @@
             const accuracyElement = document.getElementById("accuracy");
 
             scoreElement.innerHTML = "スコア: " + score;
-
+            totalQuestionsElement.innerHTML = "不正解： " + totalQuestions;
+            
             // 総問題数が0でない場合に正解率を表示
             if (totalQuestions > 0) {
                 accuracyElement.innerHTML = "正解率: " + Math.floor((score / totalQuestions) * 100) + "%";
